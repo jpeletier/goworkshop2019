@@ -65,7 +65,7 @@ func (t *timeline) Dump(addr common.Address) <-chan *Comment {
 	comments := make(chan *Comment)
 	go func() {
 		defer close(comments)
-		keyBytes, err := t.KVService.Get(t.Account.Addr(), lastPostKey)
+		keyBytes, err := t.KVService.Get(addr, lastPostKey)
 		if err != nil && err != kv.ErrKeyNotFound {
 			return
 		}
