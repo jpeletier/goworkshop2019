@@ -19,7 +19,7 @@ func runCalculator(input <-chan *CalcJob, output chan<- *CalcJob) {
 		output <- job
 	}
 	fmt.Println("Calculator server finished")
-	close(output)
+
 }
 
 func runPrintResults(input chan<- *CalcJob, output <-chan *CalcJob) {
@@ -52,7 +52,8 @@ func TestCalculatorServer(t *testing.T) {
 
 	close(input)
 
-	time.Sleep(1 * time.Second)
+	time.Sleep(5 * time.Second)
+	close(output)
 }
 
 func TestCalculatorServerInputBuffer(t *testing.T) {
