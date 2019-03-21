@@ -2,10 +2,16 @@ package swarmcas
 
 import (
 	"bytes"
-	"goworkshop/casdemo/cas"
+	"goworkshop/gossip/cas"
 	"io"
 	"io/ioutil"
+	"net/http"
+	"time"
 )
+
+func init() {
+	http.DefaultClient.Timeout = 10 * time.Second // hack to have Swarm Client time out if it can't find a key
+}
 
 type SwarmClientRaw interface {
 	UploadRaw(io.Reader, int64, bool) (string, error)

@@ -2,15 +2,13 @@ package swarmcas_test
 
 import (
 	"bytes"
-	"goworkshop/casdemo/cas/swarmcas"
+	"goworkshop/gossip/cas/swarmcas"
 	"testing"
 )
 
 func TestGetPut(t *testing.T) {
 
-	cas := swarmcas.New(swarmcas.Config{
-		SwarmClient: swarmcas.NewSwarmClientMock(),
-	})
+	cas := swarmcas.NewMock()
 
 	somedata := []byte("this is some data")
 
@@ -32,6 +30,14 @@ func TestGetPut(t *testing.T) {
 
 	if !bytes.Equal(somedata, retrievedData) {
 		t.Fatalf("Expected to retrieve %s, got %s", string(somedata), string(retrievedData))
+	}
+
+	// try to retrieve a key that does not exist:
+
+	_, err = cas.Get("0000000000000000000000000000000000000000000000000000000000000000")
+
+	if err == nil {
+		t.Fatal("Expected to have an error since the key does not exist")
 	}
 
 }
