@@ -115,9 +115,46 @@ func TestZipFileByteCount(t *testing.T) {
 }
 
 func TestUnzipFile(t *testing.T) {
+	srcFile, err := os.Open("sample.txt.gz")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer srcFile.Close()
+
+	unzipper, err := gzip.NewReader(srcFile)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	_, err = io.Copy(os.Stdout, unzipper)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 }
 
 func TestDownloadAndHash(t *testing.T) {
+
+	r, err := http.Get("https://www.gutenberg.org/cache/epub/2000/pg2000.txt")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer r.Body.Close()
+
+	file, err := os.Create("download.txt")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer file.Close()
+
+	hasher := sha256.New()
+	teeReader := io.TeeReader(r.Body, hasher)
+
+	_, err = io.Copy(file, teeReader)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	fmt.Printf("The hash is %s\n", hex.EncodeToString(hasher.Sum(nil)))
 
 }
